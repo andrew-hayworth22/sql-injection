@@ -1,0 +1,21 @@
+package templates
+
+templ Registration() {
+    @layout() {
+        <h1>Register</h1>
+        
+        <form method="post" action="/register" style="display: flex; flex-direction: column; gap: 8px;">
+            <div>
+                <label style="display: block;">Username</label>
+                <input id="username" name="username" type="username"></input>
+            </div>
+            <div>
+                <label style="display: block;">Password</label>
+                <input id="password" name="password" type="password"></input>
+            </div>
+            <div>
+                <input type="submit" value="Register"></input>
+            </div>
+        </form>
+    }
+}

@@ -1,0 +1,21 @@
+package templates
+
+templ Login() {
+    @layout() {
+        <h1>Login</h1>
+        
+        <form method="post" action="/login" style="display: flex; flex-direction: column; gap: 8px;">
+            <div>
+                <label style="display: block;">Username</label>
+                <input id="username" name="username" type="text"></input>
+            </div>
+            <div>
+                <label style="display: block;">Password</label>
+                <input id="password" name="password" type="password"></input>
+            </div>
+            <div>
+                <input type="submit" value="login"></input>
+            </div>
+        </form>
+    }
+}

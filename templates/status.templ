@@ -1,0 +1,21 @@
+package templates
+
+import (
+	"github.com/andrew-hayworth22/sql-injection/models"
+)
+
+templ Status(users []models.User, data []models.Data) {
+    @layout() {
+        <h1> DB Status </h1>
+
+        <h2>Users</h2>
+        for _, user := range users {
+            <div>{ user.Username }</div>
+        }
+
+        <h2>Data</h2>
+        for _, d := range data {
+            <div>{ d.Data }</div>
+        }
+    }
+}

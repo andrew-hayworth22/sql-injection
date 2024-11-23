@@ -1,0 +1,30 @@
+package templates
+
+import "os"
+
+templ layout() {
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <title>SQL Injection Demo</title>
+        </head>
+
+        <body>
+            <nav style="margin-top: 8px; display:flex; gap: 8px; align-items: center;">
+                if os.Getenv("STATUS") == "VULNERABLE" {
+                    <span style="background-color: red; padding: 5px 3px;">Vulnerable</span>
+                } else {
+                    <span style="background-color: green; padding: 5px 3px;">Secure</span>
+                }
+                <a href="/"> Registration </a>
+                <a href="/login"> Login </a>
+                <a href="/status"> Status </a>
+                <a href="/reset">Reset DB</a>
+            </nav>
+
+            <hr>
+
+            { children... }
+        </body>
+    </html>
+}
