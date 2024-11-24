@@ -12,9 +12,9 @@ templ layout() {
         <body>
             <nav style="margin-top: 8px; display:flex; gap: 8px; align-items: center;">
                 if os.Getenv("STATUS") == "VULNERABLE" {
-                    <span style="background-color: red; padding: 5px 3px;">Vulnerable</span>
+                    <a href="/switch" style="background-color: red; padding: 5px 3px;">Vulnerable</a>
                 } else {
-                    <span style="background-color: green; padding: 5px 3px;">Secure</span>
+                    <a href="/switch" style="background-color: green; padding: 5px 3px;">Secure</a>
                 }
                 <a href="/"> Registration </a>
                 <a href="/login"> Login </a>

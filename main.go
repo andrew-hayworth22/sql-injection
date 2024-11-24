@@ -36,17 +36,11 @@ func main() {
 	fixed := flag.Bool("secure", false, "Pass this flag if you want security against SQL injection")
 	flag.Parse()
 
-	var authenticator common.Authenticator
-	if *fixed {
-		authenticator = app.SecureAuthenticator{}
-		os.Setenv("STATUS", "SECURE")
-	} else {
-		authenticator = app.VulnerableAuthenticator{}
-		os.Setenv("STATUS", "VULNERABLE")
-	}
+	server := app.NewServer(*fixed)
 
-	http.HandleFunc("POST /register", authenticator.Register)
-	http.HandleFunc("POST /login", authenticator.Login)
+	http.HandleFunc("POST /register", server.Register)
+	http.HandleFunc("POST /login", server.Login)
+	http.HandleFunc("GET /switch", server.SwitchAuthenticator)
 
 	fmt.Printf("Listening on %s\n", port)
 	http.ListenAndServe(port, nil)

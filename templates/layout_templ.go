@@ -33,12 +33,12 @@ func layout() templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if os.Getenv("STATUS") == "VULNERABLE" {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<span style=\"background-color: red; padding: 5px 3px;\">Vulnerable</span> ")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<a href=\"/switch\" style=\"background-color: red; padding: 5px 3px;\">Vulnerable</a> ")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<span style=\"background-color: green; padding: 5px 3px;\">Secure</span> ")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<a href=\"/switch\" style=\"background-color: green; padding: 5px 3px;\">Secure</a> ")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

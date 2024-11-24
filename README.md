@@ -12,7 +12,9 @@ To run the server, run the following command:
 
 By default, the server will contain SQL injection vulnerabilities. To run a fixed version of the server, run this command:
 
-``` go run . --fixed ```
+``` go run . --secure ```
+
+You can switch between these modes while the server is running by clicking on the state link on the top left corner of the screen.
 
 ## Screen Breakdown
 
