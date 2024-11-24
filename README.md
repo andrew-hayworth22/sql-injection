@@ -49,7 +49,7 @@ Username: ``` '; drop table users; /* ```
 
 With these inputs, any user can drop the entire user table. This not only loses all of that sensitive data, but also renders the server unusable due to query errors.
 
-## Attack 2: Unauthorized Access
+## Attack 2: Unauthorized Data Access
 
 Username: ``` andy' or '' = ' ```
 
