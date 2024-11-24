@@ -18,24 +18,13 @@ func (ba VulnerableAuthenticator) Register(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	if len(req.Password) < 6 {
-		common.Fail("Password is too short(must be greater than or equal to 6 characters)", w, r)
-		return
-	}
-
-	encryptedPassword, err := common.Encrypt(req.Password)
-	if err != nil {
-		common.Fail("Failed encrypting password", w, r)
-		return
-	}
-
 	db, err := common.ConnectDatabase(os.Getenv("DB_NAME"))
 	if err != nil {
 		common.Fail("Failed connecting to DB", w, r)
 		return
 	}
 
-	createUserSQL := fmt.Sprintf(`insert into users(username, password) values ('%s', '%s');`, req.Username, encryptedPassword)
+	createUserSQL := fmt.Sprintf(`insert into users(username, password) values ('%s', '%s') returning id;`, req.Username, req.Password)
 
 	transaction, err := db.Begin()
 	if err != nil {
@@ -44,10 +33,25 @@ func (ba VulnerableAuthenticator) Register(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	_, err = transaction.Exec(createUserSQL)
+	idRow := transaction.QueryRow(createUserSQL)
 	if err != nil {
 		transaction.Rollback()
 		common.Fail("Failed creating user", w, r)
+		return
+	}
+	var id int
+	err = idRow.Scan(&id)
+	if err != nil {
+		transaction.Rollback()
+		common.Fail("Failed creating user", w, r)
+		return
+	}
+
+	createDataSQL := fmt.Sprintf(`insert into data (user_id, data) values (%d, 'Some data for you'), (%d, 'This is confidential!');`, id, id)
+	_, err = transaction.Exec(createDataSQL)
+	if err != nil {
+		transaction.Rollback()
+		common.Fail("Failed generating data: "+err.Error(), w, r)
 		return
 	}
 
@@ -69,13 +73,7 @@ func (ba VulnerableAuthenticator) Login(w http.ResponseWriter, r *http.Request) 
 	}
 	defer db.Close()
 
-	encryptedPassword, err := common.Encrypt(req.Password)
-	if err != nil {
-		common.Fail("Critical error: failed encryption", w, r)
-		return
-	}
-
-	getUserSQL := fmt.Sprintf(`select id, username, password from users where username = '%s' and password = '%s';`, req.Username, encryptedPassword)
+	getUserSQL := fmt.Sprintf(`select id, username, password from users where username = '%s' and password = '%s';`, req.Username, req.Password)
 	fmt.Println("Login Request - Get User SQL")
 	fmt.Println(getUserSQL)
 
@@ -83,7 +81,7 @@ func (ba VulnerableAuthenticator) Login(w http.ResponseWriter, r *http.Request) 
 	userRow := db.QueryRow(getUserSQL)
 
 	var user models.User
-	err = userRow.Scan(&user.Id, &user.Username, &user.EncryptedPassword)
+	err = userRow.Scan(&user.Id, &user.Username, &user.Password)
 	if err != nil {
 		common.Fail("Invalid login credentials", w, r)
 		return

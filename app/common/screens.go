@@ -42,7 +42,7 @@ func Status(w http.ResponseWriter, r *http.Request) {
 	defer userRow.Close()
 	for userRow.Next() {
 		user := models.User{}
-		err := userRow.Scan(&user.Id, &user.Username, &user.EncryptedPassword)
+		err := userRow.Scan(&user.Id, &user.Username, &user.Password)
 		if err != nil {
 			Fail("Failed retrieving users: ", w, r)
 			return

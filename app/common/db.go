@@ -5,6 +5,7 @@ import (
 	"os"
 
 	_ "github.com/mattn/go-sqlite3"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func ConnectDatabase(dbName string) (*sql.DB, error) {
@@ -31,11 +32,10 @@ func ResetDatabase(dbName string) error {
 		);
 
 		insert into users(username, password) values
-		('andy', 'meqLhfqh/U8='),
-		('jeff', 'meqLhfqh/U8='),
-		('sally', 'meqLhfqh/U8='),
-		('jenny', 'meqLhfqh/U8='),
-		('bre', 'meqLhfqh/U8=');
+		('andy (vulnerable)', 'andy_pass'),
+		('jeff (vulnerable)', 'jeff_pass'),
+		(?, ?),
+		(?, ?);
 
 		create table data(
 			id integer primary key,
@@ -51,12 +51,10 @@ func ResetDatabase(dbName string) error {
 		(1, 'This is important!'),
 		(2, 'No one else should see this except Jeff!'),
 		(2, 'For Jeff: do this'),
-		(3, 'For Sally: this is sensitive'),
-		(3, 'If anyone other than Sally sees this, then we need some new software!!'),
-		(4, 'I really hope harmful attackers do not get this information.'),
-		(4, 'What is goin on Jenny?'),
-		(5, 'Bre!! This is for you'),
-		(5, 'Pleeeease do not hack this pleeeease!!');
+		(3, 'No one else should see this except Sally!'),
+		(3, 'For Sally: do this'),
+		(4, 'No one else should see this except Anna!'),
+		(4, 'For Anna: do this');
 	`
 
 	transaction, err := db.Begin()
@@ -64,7 +62,13 @@ func ResetDatabase(dbName string) error {
 		return err
 	}
 
-	transaction.Exec(createDbSql)
+	sallyName, _ := Encrypt("sally (secure)")
+	annaName, _ := Encrypt("anna (secure)")
+
+	sallyPass, _ := bcrypt.GenerateFromPassword([]byte("sally_pass"), bcrypt.DefaultCost)
+	annaPass, _ := bcrypt.GenerateFromPassword([]byte("anna_pass"), bcrypt.DefaultCost)
+
+	transaction.Exec(createDbSql, sallyName, sallyPass, annaName, annaPass)
 
 	err = transaction.Commit()
 	if err != nil {

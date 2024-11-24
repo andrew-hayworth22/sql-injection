@@ -25,23 +25,28 @@ You can switch between these modes while the server is running by clicking on th
 2. **Login:** Allows users to provide their credentials and access their data in the system.
 
 3. **Status:** Allows users to view a snapshot of what the database currently holds for troubleshooting purposes.
+
 4. **Reset DB:** Allows users to reset the database to its initial state.
 
-## Seeded Accounts
+## Account Data
 
-Here are usernames that are automatically seeded with data when the server is run or the "Reset DB" link is clicked. The password for all of these accounts is "password."
+Due to the mitigation strategies used in the secure version of the server, accounts created in vulnerable mode cannot be accessed using secure mode and vice versa.
 
-- andy
-- jeff
-- sally
-- jenny
-- bre
+The following seeded logins work in vulnerable mode:
+- andy (vulnerable)
+    - Password = andy_pass
+- jeff (vulnerable)
+    - Password = jeff_pass
 
-All of these users have data attached to their accounts.
+The following seeded logins work in secure mode:
+- sally (secure)
+    - Password = sally_pass
+- anna (secure)
+    - Password = anna_pass
 
 ## Potential SQL Injection Attacks
 
-The following inputs to the "Login" screen highlight major SQL injection vulnerabilities. Any password will work for these attacks.
+The following inputs to the "Login" screen when the server is in "Vulnerable" mode highlight major SQL injection vulnerabilities. Any password will work for these attacks.
 
 ## Attack 1: Dropping Tables
 
@@ -62,3 +67,12 @@ Username: ``` '; update data set data = 'YOU HAVE BEEN HACKED LOL'; /* ```
 This attack updates all of the data in the system to the text "YOU HAVE BEEN HACKED LOL," exposing the unauthorized tampering of data. This attack can be tweaked and extended even further. The following input will update all data associated with user's of a particular name:
 
 Username: ``` ';update data set data = 'HEY ANDY, THIS IS AN ATTACK' from (select id from users where username = 'andy') as u where user_id = u.id;/* ```
+
+## Mitigation Strategies
+
+To solve these issues and protect the server against SQL injection attacks (along with some extra protections), the secure version of this server implements these mitigation strategies:
+
+- Prepared SQL statements
+- Input sanitization and validation
+- Storing password hashes
+- Storing encrypted usernames
