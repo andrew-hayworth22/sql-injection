@@ -34,11 +34,6 @@ func (ba VulnerableAuthenticator) Register(w http.ResponseWriter, r *http.Reques
 	}
 
 	idRow := transaction.QueryRow(createUserSQL)
-	if err != nil {
-		transaction.Rollback()
-		common.Fail("Failed creating user", w, r)
-		return
-	}
 	var id int
 	err = idRow.Scan(&id)
 	if err != nil {
