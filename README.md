@@ -56,7 +56,7 @@ With these inputs, any user can drop the entire user table. This not only loses 
 
 ## Attack 2: Unauthorized Data Access
 
-Username: ``` andy' or '' = ' ```
+Username: ``` andy (vulnerable)' or '' = ' ```
 
 With these inputs, any user can access any account they want (just update the username in the beginning of the username field). This provides unauthorized access to the system.
 
